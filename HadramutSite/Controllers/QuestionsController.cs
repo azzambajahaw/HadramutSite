@@ -31,10 +31,10 @@ namespace HadramutSite.Controllers
             if (UserInfo.username != null)
             {
                 //var myDbContext = _context.Questions.Include(q => q.Subject).Include(q => q.User);
-                var myDbContext = _context.Questions.AsNoTracking().Where(x => x.SubjectID == id).ToListAsync();
+                List<Question>? myDbContext = await _context.Questions.AsNoTracking().Where(x => x.SubjectID == id).ToListAsync();
                 ViewBag.SubjectName = _context.Subjects.Find(id)!.Name;
                 ViewBag.SubjectId = id;
-                return View(await myDbContext);
+                return View( myDbContext);
             }
             return Content("Error");
 
@@ -62,7 +62,7 @@ namespace HadramutSite.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Content,Image,SubjectID,UserID")] QuestionFile questioFile)
+        public async Task<IActionResult> Create(QuestionFile questioFile)
         {
             if (UserInfo.username != null)
             {
@@ -70,11 +70,11 @@ namespace HadramutSite.Controllers
                 Question q = new Question();
                 ModelState.Remove("Image");
                 //return Content(ModelState.ToString());
-                //if (ModelState.IsValid)
-                //{
+                if (ModelState.IsValid)
+                {
                     q = questioFile;
 
-                if (questioFile.Image != null)
+                    if (questioFile.Image != null)
                     {
                         q.Image = await filesHelper.UploadFile(questioFile.Image, Path.Combine("wwwroot", "images"));
                     }
@@ -83,19 +83,20 @@ namespace HadramutSite.Controllers
                         q.Image = "default.png";
                     }
 
-                try
-                {
-                    _context.Questions.Add(q);
+                    try
+                    {
+                        _context.Questions.Add(q);
 
-                }
-                catch (Exception ex)
-                {
-                    return Content(ex.Message);
-                }
+                    }
+                    catch (Exception ex)
+                    {
+                        return Content(ex.Message);
+                    }
                     await _context.SaveChangesAsync();
-                _context.ChangeTracker.Clear() ;
-                return RedirectToAction("Index", "Subjects"); ;
-                //}
+                    _context.ChangeTracker.Clear();
+                    return RedirectToAction("Index", new { id = q.SubjectID }); ;
+                }
+                  return View(questioFile); 
             }
 
             return Content("Error");
@@ -210,7 +211,7 @@ namespace HadramutSite.Controllers
                 {
                     if (question.Image != null)
                     {
-                        filesHelper.DeleteImage(question.Image);    
+                        filesHelper.DeleteImage(question.Image);
                     }
                     _context.Questions.Remove(question);
                 }

@@ -18,13 +18,13 @@ namespace HadramutSite.Models
         [ForeignKey("Subject")]
         public int SubjectID { get; set; }
 
-        public Subject Subject { get; set; }
+        public Subject? Subject { get; set; }
 
         [ForeignKey("User")]
         public int UserID { get; set; }
 
-        public User User { get; set; }
+        public User? User { get; set; }
 
-        List<Answer> Answers { get; set; }
+        List<Answer>? Answers { get; set; }
     }
 }
