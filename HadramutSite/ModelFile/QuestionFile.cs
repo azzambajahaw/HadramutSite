@@ -8,6 +8,11 @@ namespace HadramutSite.ModelFile
     {
         [DataType(DataType.Upload)]
         public IFormFile Image { get; set; }
+<<<<<<< Updated upstream
         public int v = 7;
+=======
+        public int bb {get; set;}
+
+>>>>>>> Stashed changes
     }
 }
