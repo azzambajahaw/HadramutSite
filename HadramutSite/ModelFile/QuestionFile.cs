@@ -8,6 +8,6 @@ namespace HadramutSite.ModelFile
     {
         [DataType(DataType.Upload)]
         public IFormFile Image { get; set; }
-
+        public int v = 7;
     }
 }
