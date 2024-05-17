@@ -25,6 +25,8 @@ namespace HadramutSite.Models
 
         public User User { get; set; }
 
+
+
         
     }
 
